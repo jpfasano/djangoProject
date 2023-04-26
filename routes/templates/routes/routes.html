@@ -7,9 +7,9 @@
             <div class="article-metadata">
               Author: <a class="mr-2" href="#">{{ route.author }}</a>
               <div class="text-muted">Distance: {{  route.distance }} miles</div>
-              <div class="text-muted">Created: {{ route.date_posted }}</div>
+              <div class="text-muted">Created: {{ route.date_posted|date:"F d, Y" }}</div>
             </div>
-            <p class="article-content">{{ route.content }}</p>
+            <p class="article-content">{{ route.description }}</p>
             <p class="article-content">Starting Location: {{ route.start_location }}</p>
           </div>
         </article>
