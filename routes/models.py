@@ -5,7 +5,7 @@ from django.urls import reverse
 
 
 class Route(models.Model):
-    title = models.CharField(max_length=100)
+    route_name = models.CharField(max_length=100)
     description = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     distance = models.PositiveSmallIntegerField()
@@ -13,7 +13,7 @@ class Route(models.Model):
     author = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.title
+        return self.route_name
 
     def get_absolute_url(self):
         return reverse('route-detail', kwargs={'pk':self.pk})

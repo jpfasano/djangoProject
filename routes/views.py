@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 def routes(request):
     context = {
         'routes': Route.objects.all(),
-        'title': 'Routes'
+        'route_name': 'Routes'
     }
     return render(request, 'routes/routes.html', context)
 
@@ -46,7 +46,7 @@ class RoutesDetailView(DetailView):
 
 class RoutesCreateView(LoginRequiredMixin, CreateView):
     model = Route
-    fields = ['title', 'description', 'distance', 'start_location']
+    fields = ['route_name', 'description', 'distance', 'start_location']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -55,7 +55,7 @@ class RoutesCreateView(LoginRequiredMixin, CreateView):
 
 class RoutesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Route
-    fields = ['title', 'description', 'distance', 'start_location']
+    fields = ['route_name', 'description', 'distance', 'start_location']
 
     def form_valid(self, form):
         form.instance.author = self.request.user

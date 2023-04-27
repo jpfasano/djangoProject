@@ -2,7 +2,7 @@
 {% block content %}
     <article class="media content-section">
         <div class="media-body">
-            <h2 class="article-title"> {{ object.title }} </h2>
+            <h2 class="article-title"> {{ object.route_name }} </h2>
             <div class="article-metadata">
                 Author: <a class="mr-2" href="{% url 'user-routes' object.author.username  %}">{{ object.author }}</a>
                 <div class="text-muted">Distance: {{ object.distance }} miles</div>

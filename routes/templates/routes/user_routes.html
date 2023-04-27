@@ -4,7 +4,7 @@
     {% for route in routes %}
         <article class="media content-section">
           <div class="media-body">
-            <h2><a class="article-title" href="{% url 'route-detail' route.id %}">{{ route.title }}</a></h2>
+            <h2><a class="article-title" href="{% url 'route-detail' route.id %}">{{ route.route_name }}</a></h2>
             <div class="article-metadata">
               Author: <a class="mr-2" href="{% url 'user-routes' route.author.username  %}">{{ route.author }}</a>
               <div class="text-muted">Distance: {{  route.distance }} miles</div>
