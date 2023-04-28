@@ -1,3 +1,4 @@
+from ckeditor.widgets import CKEditorWidget
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -12,6 +13,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from .models import Route
 from django.contrib.auth.models import User
+from django import forms
 
 
 def routes(request):
@@ -40,6 +42,7 @@ class UserRoutesListView(ListView):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Route.objects.filter(author=user).order_by('-date_posted')
 
+
 class RoutesDetailView(DetailView):
     model = Route
 
@@ -47,6 +50,7 @@ class RoutesDetailView(DetailView):
 class RoutesCreateView(LoginRequiredMixin, CreateView):
     model = Route
     fields = ['route_name', 'description', 'distance', 'start_location']
+    # form_class = RouteCreateUpdateForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -56,6 +60,8 @@ class RoutesCreateView(LoginRequiredMixin, CreateView):
 class RoutesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Route
     fields = ['route_name', 'description', 'distance', 'start_location']
+
+    # form_class = RouteCreateUpdateForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user

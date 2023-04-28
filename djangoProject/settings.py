@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'phone_field',
+    'ckeditor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -140,5 +141,24 @@ EMAIL_USE_TLS = True
 credential = get_credential('gmail',None)
 EMAIL_HOST_USER = credential.username
 EMAIL_HOST_PASSWORD = credential.password
+
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': [
+            ['Undo', 'Redo',
+             '-', 'Bold', 'Italic', 'Underline','BulletedList','NumberedList','Outdent','Indent',
+             '-', 'Link', 'Unlink','TextColor','BGColor','Table',
+             '-', 'Format',
+
+             '-', 'Source','Maximize',
+
+             ],
+        ],
+        'initialWidth': '100%',
+        'width': 'auto',
+        'toolbarCanCollapse': True,
+    },
+}
 
 

@@ -9,8 +9,8 @@
               <div class="text-muted">Distance: {{  route.distance }} miles</div>
               <div class="text-muted">Created: {{ route.date_posted|date:"F d, Y" }}</div>
             </div>
-            <p class="article-content">{{ route.description }}</p>
-            <p class="article-content">Starting Location: {{ route.start_location }}</p>
+            <p class="article-content">{{ route.description|safe }}</p>
+            <p class="article-content">Starting Location: {{ route.start_location|safe }}</p>
           </div>
         </article>
     {% endfor %}

@@ -14,8 +14,8 @@
                     {% endif %}
                 </div>
             </div>
-            <p class="article-content">{{ object.description }}</p>
-            <p class="article-content">Starting Location: {{ object.start_location }}</p>
+            <p class="article-content">{{ object.description|safe }}</p>
+            <p class="article-content">Starting Location: {{ object.start_location|safe }}</p>
         </div>
     </article>
 {% endblock content %}
