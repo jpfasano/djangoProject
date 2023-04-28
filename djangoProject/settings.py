@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'routes.apps.RoutesConfig',
+    'rides.apps.RidesConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
     'crispy_bootstrap5',

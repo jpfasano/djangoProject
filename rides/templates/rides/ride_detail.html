@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% include "rides/inc_ride_article.html" %}
+
+    <div>
+        {% if object.leader == user %}
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-update' object.id %}">Update</a>
+            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'ride-delete' object.id %}">Delete</a>
+        {% endif %}
+    </div>
+{% endblock content %}
