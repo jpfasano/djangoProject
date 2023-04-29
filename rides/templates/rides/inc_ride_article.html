@@ -3,18 +3,17 @@
         <div class="article-metadata">
             Leader:
             <a class="mr-2" href="{% url 'user-rides' ride.leader.username %}">
-                {{ ride.leader.first_name }} {{ ride.leader.last_name }}
+                {{ ride.leader.username }}
             </a>
+            <div class="text-muted">Route: {{ ride.route.route_name }}. {{ ride.route.distance }} miles</div>
             <!--
-                    <div class="text-muted">Distance: {{ ride.distance }} miles</div>
                     <div class="text-muted">Created: {{ ride.date_posted|date:"F d, Y" }}</div>
                     -->
         </div>
         <p class="article-content">{{ ride.additional_details|safe }}</p>
         <!--
                 <p class="article-content">Starting Location: {{ ride.start_location|safe }}</p>
-                -->
-
-        <div class="text-muted"><a href="{% url 'ride-detail' ride.id %}">More details</a></div>
+        -->
+        <div class="text-muted"><a href="{% url 'ride-detail' ride.id %}">More details</a> </div>
     </div>
 </article>

@@ -37,11 +37,20 @@ class UserRidesListView(ListView):
 
 class RidesDetailView(DetailView):
     model = Ride
+    context_object_name = 'ride'
+
+    # def get_context_data(self, **kwargs):
+    #     # Call the base implementation first to get a context
+    #     context = super().get_context_data(**kwargs)
+    #     # Add in a QuerySet of all the books
+    #     context["display_more"] = False
+    #     context['jptest'] = 'jpfest'
+    #     return context
 
 
 class RidesCreateView(LoginRequiredMixin, CreateView):
     model = Ride
-    fields = ['additional_details']
+    fields = ['route', 'additional_details']
     # form_class = RideCreateUpdateForm
 
     def form_valid(self, form):
@@ -51,13 +60,13 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
 
 class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ride
-    fields = ['leader', 'additional_details']
+    fields = ['route', 'additional_details', 'leader']
 
     # form_class = RideCreateUpdateForm
 
-    def form_valid(self, form):
-        form.instance.leader = self.request.user
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.leader = self.request.user
+    #     return super().form_valid(form)
 
     # Check to make sure user is allowed to update the ride.
     # Only the ride's leader is allowed to update.
@@ -67,6 +76,7 @@ class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         else:
             return False
+
 
 
 class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

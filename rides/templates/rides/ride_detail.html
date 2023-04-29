@@ -2,7 +2,26 @@
 {% block content %}
 
     {% include "rides/inc_ride_article.html" %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
 
+                <div class="mr-2">
+                    Leader Name: {{ ride.leader.first_name }} {{ ride.leader.last_name }}
+                </div>
+                <div class="mr-2">
+                    Leader email: {{ ride.leader.email }}
+                </div>
+                <div class="mr-2">
+                    Route Details: {{ ride.route.description|safe }}
+                </div>
+                <div class="mr-2">
+                    Route Starting Location: {{ ride.route.start_location|safe }}
+                </div>
+
+            </div>
+        </div>
+    </article>
     <div>
         {% if object.leader == user %}
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-update' object.id %}">Update</a>
