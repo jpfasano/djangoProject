@@ -11,6 +11,8 @@ from django.views.generic import (
 
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+
+from .forms import CreateRideForm
 from .models import Ride
 from django.contrib.auth.models import User
 
@@ -50,8 +52,8 @@ class RidesDetailView(DetailView):
 
 class RidesCreateView(LoginRequiredMixin, CreateView):
     model = Ride
-    fields = ['route', 'additional_details']
-    # form_class = RideCreateUpdateForm
+    # fields = ['route', 'ride_date', 'start_time', 'additional_details']
+    form_class = CreateRideForm
 
     def form_valid(self, form):
         form.instance.leader = self.request.user
@@ -60,7 +62,7 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
 
 class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ride
-    fields = ['route', 'additional_details', 'leader']
+    fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
 
     # form_class = RideCreateUpdateForm
 

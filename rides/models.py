@@ -10,6 +10,8 @@ class Ride(models.Model):
     leader = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     route = models.ForeignKey(Route, blank=True, null=True, on_delete=models.SET_NULL)
     additional_details = RichTextField(blank=True, null=True)
+    ride_date = models.DateField()
+    start_time = models.TimeField()
     # Route also a foreign key.
     # Date
     #
