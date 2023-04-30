@@ -1,10 +1,12 @@
+from datetime import datetime, date, timedelta
+
 from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from django.forms.utils import ErrorList
 
-
+from django.db import models
 
 from routes.models import Route
 from .models import Ride
@@ -12,18 +14,34 @@ from .models import Ride
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+
+
 class TimeInput(forms.TimeInput):
     input_type = 'time'
 
 
+def default_ride_date():
+    # One week from today
+    return datetime.today() + timedelta(days=7)
+
+
+def default_ride_start_time():
+    # ten in the morning
+    return default_ride_date().replace(hour=10, minute=00, second=00)
+
+
 class CreateRideForm(ModelForm):
-
-
     # leader = forms.ModelChoiceField(queryset=User.objects.all)
     route = forms.ModelChoiceField(queryset=Route.objects.all())
     additional_details = forms.CharField(widget=CKEditorWidget())
-    ride_date = forms.DateField(widget=DateInput())
-    start_time = forms.TimeField(widget=TimeInput())
+    # ride_date = forms.DateField(widget=DateInput(attrs={'width': 200}), initial=default_ride_date)
+    ride_date = forms.DateField(widget=DateInput(), initial=default_ride_date)
+    start_time = forms.TimeField(widget=TimeInput(), initial=default_ride_start_time)
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #
+    #     self.fields['start_time'].initial = models.TimeField('10:00am')
 
     class Meta:
         model = Ride

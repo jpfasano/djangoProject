@@ -1,23 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
-
-    {% include "rides/inc_ride_article.html" %}
     <article class="media content-section">
         <div class="media-body">
             <div class="article-metadata">
 
-                <div class="mr-2">
-                    Leader Name: {{ ride.leader.first_name }} {{ ride.leader.last_name }}
+                <div><h3>Route: {{ ride.route.route_name }} </h3></div>
+                <div><strong>Distance:</strong>  {{ ride.route.distance }} miles</div>
+                <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
+                <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
+
+                <div class="text-muted"><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
+                <div class="text-muted">
+                    <strong>Leader:</strong> <a href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
                 </div>
-                <div class="mr-2">
-                    Leader email: {{ ride.leader.email }}
+
+                <div>
+                    <strong>Leader Name:</strong> {{ ride.leader.first_name }} {{ ride.leader.last_name }}
                 </div>
-                <div class="mr-2">
-                    Route Details: {{ ride.route.description|safe }}
+                <div>
+                    <strong>Leader email:</strong> {{ ride.leader.email }}
                 </div>
-                <div class="mr-2">
-                    Route Starting Location: {{ ride.route.start_location|safe }}
+                <div>
+                    <strong>Route Details:</strong> {{ ride.route.description|safe }}
                 </div>
+                <div>
+                    <strong>Route Starting Location:</strong> {{ ride.route.start_location|safe }}
+                </div>
+                 <div class="mr-2"><strong>Ride Details:</strong> {{ ride.additional_details|safe }}</div>
 
             </div>
         </div>

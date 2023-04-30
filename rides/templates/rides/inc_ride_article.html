@@ -1,21 +1,19 @@
 <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
-            Leader:
-            <a class="mr-2" href="{% url 'user-rides' ride.leader.username %}">
-                {{ ride.leader.username }}
-            </a>
-            <div class="text-muted">Route: {{ ride.route.route_name }}. {{ ride.route.distance }} miles</div>
-            <div class="text-muted">Ride Date: {{ ride.ride_date|date:"F d, Y" }}</div>
-            <div class="text-muted">Start Time: {{ ride.start_time }}</div>
+            <div class="mr-2"><strong>Route:</strong> {{ ride.route.route_name }}</div>
+            <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
+            <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
+            <div class="text-muted">
+                <strong>Leader:</strong> <a href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
+            </div>
             <!--
                     <div class="text-muted">Created: {{ ride.date_posted|date:"F d, Y" }}</div>
                     -->
-        </div>
-        <p class="article-content">{{ ride.additional_details|safe }}</p>
+
+        <a class="btn  btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-detail' ride.id %}">More details</a>
         <!--
-                <p class="article-content">Starting Location: {{ ride.start_location|safe }}</p>
-        -->
         <div class="text-muted"><a href="{% url 'ride-detail' ride.id %}">More details</a> </div>
+        -->
     </div>
 </article>

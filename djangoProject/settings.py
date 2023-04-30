@@ -60,8 +60,7 @@ ROOT_URLCONF = 'djangoProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -139,21 +138,18 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-credential = get_credential('gmail',None)
+credential = get_credential('gmail', None)
 EMAIL_HOST_USER = credential.username
 EMAIL_HOST_PASSWORD = credential.password
-
 
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': [
             ['Undo', 'Redo',
-             '-', 'Bold', 'Italic', 'Underline','BulletedList','NumberedList','Outdent','Indent',
-             '-', 'Link', 'Unlink','TextColor','BGColor','Table',
+             '-', 'Bold', 'Italic', 'Underline', 'BulletedList', 'NumberedList', 'Outdent', 'Indent',
+             '-', 'Link', 'Unlink', 'TextColor', 'BGColor', 'Table',
              '-', 'Format',
-
-             '-', 'Source','Maximize',
-
+             '-', 'Source', 'Maximize',
              ],
         ],
         'initialWidth': '100%',
@@ -161,5 +157,3 @@ CKEDITOR_CONFIGS = {
         'toolbarCanCollapse': True,
     },
 }
-
-
