@@ -33,7 +33,7 @@ def default_ride_start_time():
 class CreateRideForm(ModelForm):
     # leader = forms.ModelChoiceField(queryset=User.objects.all)
     route = forms.ModelChoiceField(queryset=Route.objects.all())
-    additional_details = forms.CharField(widget=CKEditorWidget())
+    additional_details = forms.CharField(widget=CKEditorWidget(),required=False)
     # ride_date = forms.DateField(widget=DateInput(attrs={'width': 200}), initial=default_ride_date)
     ride_date = forms.DateField(widget=DateInput(), initial=default_ride_date)
     start_time = forms.TimeField(widget=TimeInput(), initial=default_ride_start_time)
@@ -42,6 +42,12 @@ class CreateRideForm(ModelForm):
     #     super().__init__(*args, **kwargs)
     #
     #     self.fields['start_time'].initial = models.TimeField('10:00am')
+
+    def clean_ride_date(self):
+        ride_date = self.cleaned_data['ride_date']
+        if ride_date < date.today():
+            raise forms.ValidationError("The date cannot be in the past")
+        return ride_date
 
     class Meta:
         model = Ride

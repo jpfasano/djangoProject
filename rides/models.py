@@ -7,8 +7,8 @@ from routes.models import Route
 
 
 class Ride(models.Model):
-    leader = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
-    route = models.ForeignKey(Route, blank=True, null=True, on_delete=models.SET_NULL)
+    leader = models.ForeignKey(User, blank=False, null=True, on_delete=models.SET_NULL)
+    route = models.ForeignKey(Route, blank=False, null=True, on_delete=models.SET_NULL)
     additional_details = RichTextField(blank=True, null=True)
     ride_date = models.DateField()
     start_time = models.TimeField()
