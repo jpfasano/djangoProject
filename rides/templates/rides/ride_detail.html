@@ -5,13 +5,14 @@
             <div class="article-metadata">
 
                 <div><h3>Route: {{ ride.route.route_name }} </h3></div>
-                <div><strong>Distance:</strong>  {{ ride.route.distance }} miles</div>
+                <div><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
                 <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
                 <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
 
                 <div class="text-muted"><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
                 <div class="text-muted">
-                    <strong>Leader:</strong> <a href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
+                    <strong>Leader:</strong> <a
+                        href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
                 </div>
 
                 <div>
@@ -21,12 +22,24 @@
                     <strong>Leader email:</strong> {{ ride.leader.email }}
                 </div>
                 <div>
-                    <strong>Route Details:</strong> {{ ride.route.description|safe }}
+                    <strong>Route Details:</strong>
+                    <div class="ml-4">{{ ride.route.description|safe }}</div>
                 </div>
                 <div>
-                    <strong>Route Starting Location:</strong> {{ ride.route.start_location|safe }}
+                    <strong>Route Starting Location:</strong>
+                    <div class="ml-4">{{ ride.route.start_location|safe }}</div>
                 </div>
-                 <div class="mr-2"><strong>Ride Details:</strong> {{ ride.additional_details|safe }}</div>
+                <div><strong>Ride Details:</strong>
+                    <div class="ml-4">{{ ride.additional_details|safe }}</div>
+                </div>
+                <div>
+                    <strong>Signed up:</strong>
+                    {% for rider in ride.participants.all %}
+                        <div class="ml-4">
+                            {{ rider.first_name }} {{ rider.last_name }}
+                        </div>
+                    {% endfor %}
+                </div>
 
             </div>
         </div>
@@ -44,7 +57,9 @@
         {% elif buttons == 'remove_participation' %}
             <form method="post">
                 {% csrf_token %}
-                <button class="btn btn-outline-info" type="submit" name="action" value="remove_participation">Un-Sign Up</button>
+                <button class="btn btn-outline-info" type="submit" name="action" value="remove_participation">Un-Sign
+                    Up
+                </button>
             </form>
         {% endif %}
     </div>

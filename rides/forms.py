@@ -57,7 +57,7 @@ class CreateRideForm(ModelForm):
 
 class UpdateRideForm(ModelForm):
     leader = forms.ModelChoiceField(User.objects.all(),
-                            help_text='Caution: If changed, then only the new leader will be able to edit this ride.')
+        help_text='Caution: If the ride leader is changed, then only the new leader will be able to edit this ride.')
     route = forms.ModelChoiceField(queryset=Route.objects.all())
     additional_details = forms.CharField(widget=CKEditorWidget(), required=False)
     # ride_date = forms.DateField(widget=DateInput(attrs={'width': 200}), initial=default_ride_date)
