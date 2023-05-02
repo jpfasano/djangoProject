@@ -1,18 +1,20 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views import View
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView, FormView
 )
 
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.views.generic.detail import SingleObjectMixin
 
-from .forms import CreateRideForm
+from .forms import CreateRideForm, UpdateRideForm
 from .models import Ride
 from django.contrib.auth.models import User
 
@@ -37,18 +39,60 @@ class UserRidesListView(ListView):
         # return Ride.objects.filter(leader=user).order_by('-date_posted')
 
 
-class RidesDetailView(DetailView):
+class RidesDetailView(DetailView): # SingleObjectMixin,FormView):
     model = Ride
-    context_object_name = 'ride'
+    # context_object_name = 'ride'
+    # fields = []
 
-    # def get_context_data(self, **kwargs):
-    #     # Call the base implementation first to get a context
-    #     context = super().get_context_data(**kwargs)
-    #     # Add in a QuerySet of all the books
-    #     context["display_more"] = False
-    #     context['jptest'] = 'jpfest'
-    #     return context
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        leader = self.get_object().leader
+        participants = self.get_object().participants
+        user = self.request.user
+        buttons_value = 'None'
+        if leader == user:
+            buttons_value = 'update_delete'
+        elif participants.filter(pk=user.pk).exists():
+            buttons_value = 'remove_participation'
+        else:
+            buttons_value = 'signup'
+        context["buttons"] = buttons_value
+        return context
 
+    def post(self, request, *args, **kwargs):
+        # Get the current pk from the method dictionary
+        pk = kwargs.get('pk')
+
+        if request.method == 'POST':
+            # # Get the current object
+            obj = self.model.objects.get(id=pk)
+            # Alter the field Value
+            action = request.POST.get('action')
+            if action == 'signup':
+                pobj = self.get_object().participants
+                user = self.request.user
+                pobj.add(user)
+            elif action == 'remove_participation':
+                pobj = self.get_object().participants
+                user = self.request.user
+                pobj.remove(user)
+
+
+            # obj.field = some_value
+            # # Save the object
+            # obj.save()
+
+            # Redirect to you current View after update
+            return redirect('ride-detail', pk=pk)
+            # reverse('rides')
+    #
+    # def form_valid(self, form):
+    #     review = form.instance
+    #     review.user = self.request.user
+    #     review.expert = self.object
+    #     form.save()
+    #     return super().form_valid(form)
 
 class RidesCreateView(LoginRequiredMixin, CreateView):
     model = Ride
@@ -62,9 +106,8 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
 
 class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Ride
-    fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
-
-    # form_class = RideCreateUpdateForm
+    # fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
+    form_class = UpdateRideForm
 
     # def form_valid(self, form):
     #     form.instance.leader = self.request.user

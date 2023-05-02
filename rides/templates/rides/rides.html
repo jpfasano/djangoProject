@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for ride in rides %}
+    {% for object in rides %}
         {% include "rides/inc_ride_article.html" %}
     {% endfor %}
     {% if is_paginated %}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.contrib.auth.models import User
@@ -12,12 +14,40 @@ class Ride(models.Model):
     additional_details = RichTextField(blank=True, null=True)
     ride_date = models.DateField()
     start_time = models.TimeField()
+    participants = models.ManyToManyField(User, related_name='ride_participants')
+
     # Route also a foreign key.
     # Date
     #
 
     def __str__(self):
-        return self.route.route_name
+        rn = ''
+        if self.route is not None:
+            rn = self.route.route_name
+        ld = self.leader
+        ret_val = 'Ride:'
+        if rn is not None:
+            ret_val += rn
+        if ld is not None:
+            ret_val += ' ' + ld.first_name + " " + ld.last_name
+        return ret_val
 
     def get_absolute_url(self):
-        return reverse('ride-detail', kwargs={'pk':self.pk})
+        return reverse('ride-detail', kwargs={'pk': self.pk})
+
+    @property
+    def event_status(self):
+        status = None
+
+        present = datetime.now()
+        ride_occurred = (present >= self.ride_date)
+
+        if ride_occurred:
+            status = 'Finished'
+        else:
+            status = 'Ongoing'
+
+        return status
+
+    class Meta:
+        ordering = ['-ride_date']

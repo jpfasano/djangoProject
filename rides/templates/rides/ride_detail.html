@@ -32,9 +32,19 @@
         </div>
     </article>
     <div>
-        {% if object.leader == user %}
+        {% if buttons  == 'update_delete' %}
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-update' object.id %}">Update</a>
             <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'ride-delete' object.id %}">Delete</a>
+        {% elif buttons == 'signup' %}
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-outline-info" type="submit" name="action" value="signup">Signup</button>
+            </form>
+        {% elif buttons == 'remove_participation' %}
+            <form method="post">
+                {% csrf_token %}
+                <button class="btn btn-outline-info" type="submit" name="action" value="remove_participation">Un-Signup</button>
+            </form>
         {% endif %}
     </div>
 {% endblock content %}
