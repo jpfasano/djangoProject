@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -67,16 +68,19 @@ class RidesDetailView(DetailView): # SingleObjectMixin,FormView):
         if request.method == 'POST':
             # # Get the current object
             obj = self.model.objects.get(id=pk)
+            ride_as_string = str(obj)
             # Alter the field Value
             action = request.POST.get('action')
             if action == 'signup':
                 pobj = self.get_object().participants
                 user = self.request.user
                 pobj.add(user)
+                messages.success(request, f'You are signed up for {ride_as_string}')
             elif action == 'remove_participation':
                 pobj = self.get_object().participants
                 user = self.request.user
                 pobj.remove(user)
+                messages.success(request, f'You are no longer signed up for {ride_as_string}')
 
 
             # obj.field = some_value

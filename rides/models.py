@@ -22,14 +22,18 @@ class Ride(models.Model):
 
     def __str__(self):
         rn = ''
+        ld = ''
+        rd = ''
         if self.route is not None:
             rn = self.route.route_name
-        ld = self.leader
-        ret_val = 'Ride:'
-        if rn is not None:
-            ret_val += rn
-        if ld is not None:
-            ret_val += ' ' + ld.first_name + " " + ld.last_name
+        if self.leader is not None:
+            ld = self.leader
+        if self.ride_date is not None:
+            rd = str(self.ride_date)
+        ret_val = ''
+        ret_val += rn
+        ret_val += ' on ' + rd
+        ret_val += ' lead by ' + ld.first_name + " " + ld.last_name
         return ret_val
 
     def get_absolute_url(self):

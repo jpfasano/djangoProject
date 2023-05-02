@@ -38,12 +38,13 @@
         {% elif buttons == 'signup' %}
             <form method="post">
                 {% csrf_token %}
-                <button class="btn btn-outline-info" type="submit" name="action" value="signup">Signup</button>
+                <p>Sign up to receive future email notices about this ride.</p>
+                <button class="btn btn-outline-info" type="submit" name="action" value="signup">Sign Up</button>
             </form>
         {% elif buttons == 'remove_participation' %}
             <form method="post">
                 {% csrf_token %}
-                <button class="btn btn-outline-info" type="submit" name="action" value="remove_participation">Un-Signup</button>
+                <button class="btn btn-outline-info" type="submit" name="action" value="remove_participation">Un-Sign Up</button>
             </form>
         {% endif %}
     </div>
