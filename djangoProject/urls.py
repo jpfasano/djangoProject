@@ -39,5 +39,5 @@ urlpatterns = [
          name='password_reset_complete'),
 
     path('', include('routes.urls')),
-    path('rides', include('rides.urls')),
+    path('rides/', include('rides.urls')),
 ]
