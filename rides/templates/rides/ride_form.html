@@ -7,17 +7,21 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 {% if object %}
-                     <legend class="border-bottom mb-4">Update Ride</legend>
+                    <legend class="border-bottom mb-4">Update Ride</legend>
                 {% else %}
-                     <legend class="border-bottom mb-4">Schedule New Ride</legend>
+                    <legend class="border-bottom mb-4">Schedule New Ride</legend>
                 {% endif %}
                 {{ form.media }}
-                {{ form|crispy}}
+                {{ form|crispy }}
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">{{ object|yesno:'Update, Schedule' }} Ride</button>
-            </div>
+            <button class="btn btn-outline-info" type="submit" name="action"
+                    value="{{ object|yesno:'update, schedule' }}">{{ object|yesno:'Update, Schedule' }}
+            </button>
+            <button class="btn btn-outline-info" type="submit" name="action"
+                    value="{{ object|yesno:'update, schedule' }}_and_email">{{ object|yesno:'Update, Schedule' }} and
+                email
+            </button>
+            <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
         </form>
-
     </div>
 {% endblock content %}

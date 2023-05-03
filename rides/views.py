@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -40,8 +41,9 @@ class UserRidesListView(ListView):
         # return Ride.objects.filter(leader=user).order_by('-date_posted')
 
 
-class RidesDetailView(DetailView): # SingleObjectMixin,FormView):
+class RidesDetailView(DetailView):  # SingleObjectMixin,FormView):
     model = Ride
+
     # context_object_name = 'ride'
     # fields = []
 
@@ -82,14 +84,12 @@ class RidesDetailView(DetailView): # SingleObjectMixin,FormView):
                 pobj.remove(user)
                 messages.success(request, f'You are no longer signed up for {ride_as_string}')
 
-
             # obj.field = some_value
             # # Save the object
             # obj.save()
 
-            # Redirect to you current View after update
-            return redirect('ride-detail', pk=pk)
-            # reverse('rides')
+        # Redirect to you current View after update
+        return redirect('ride-detail', pk=pk)
     #
     # def form_valid(self, form):
     #     review = form.instance
@@ -97,6 +97,7 @@ class RidesDetailView(DetailView): # SingleObjectMixin,FormView):
     #     review.expert = self.object
     #     form.save()
     #     return super().form_valid(form)
+
 
 class RidesCreateView(LoginRequiredMixin, CreateView):
     model = Ride
@@ -126,6 +127,28 @@ class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             return False
 
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.send_email()
+        if form.has_changed():
+            success_message = None
+            if self.request.POST['action'] == 'update':
+                success_message = 'Ride data has been updated.'
+            elif self.request.POST['action'] == 'update_and_email':
+                for changed in form.changed_data:
+                    print(changed)
+                participants = self.get_object().participants.all()
+                for p in participants:
+                    print("Ride updated. Send email to inform " + p.email)
+                success_message = 'Ride updated'
+                if len(participants) > 0:
+                    success_message += ' and email sent to sign-up list'
+            if success_message is not None:
+                messages.success(self.request, success_message)
+        else:
+            messages.warning(self.request, 'No changes detected. Ride not updated')
+        return super().form_valid(form)
 
 
 class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -144,5 +167,21 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return reverse('rides')
 
+    def post(self, request, *args, **kwargs):
+        # Get the current pk from the method dictionary
+        pk = kwargs.get('pk')
+        obj = self.model.objects.get(id=pk)
+        ride_as_string = str(obj)
 
+        if request.method == 'POST':
 
+            action = request.POST.get('action')
+            if action == 'delete':
+                for p in self.get_object().participants.all():
+                    print("Ride canceled. Send email to inform " + p.email)
+
+                # Redirect to all rides view after delete
+                Ride.objects.get(id=pk).delete()
+                messages.success(request, f'"{ride_as_string}" deleted and signed-up users notified.')
+        return redirect('rides')
+        # reverse('rides')
