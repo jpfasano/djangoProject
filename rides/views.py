@@ -167,21 +167,34 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return reverse('rides')
 
-    def post(self, request, *args, **kwargs):
-        # Get the current pk from the method dictionary
-        pk = kwargs.get('pk')
-        obj = self.model.objects.get(id=pk)
-        ride_as_string = str(obj)
+    def form_valid(self, form):
+        action = self.request.POST['action']
+        if action == 'delete':
+            participants = self.get_object().participants.all()
+            for p in participants:
+                print("Ride canceled. Send email to inform " + p.email)
 
-        if request.method == 'POST':
+            pk = self.kwargs.get('pk')
+            obj = self.model.objects.get(id=pk)
+            ride_as_string = str(obj)
+            messages.success(self.request, "The ride '"+ ride_as_string+"' has been canceled")
+        return super().form_valid(form)
 
-            action = request.POST.get('action')
-            if action == 'delete':
-                for p in self.get_object().participants.all():
-                    print("Ride canceled. Send email to inform " + p.email)
-
-                # Redirect to all rides view after delete
-                Ride.objects.get(id=pk).delete()
-                messages.success(request, f'"{ride_as_string}" deleted and signed-up users notified.')
-        return redirect('rides')
-        # reverse('rides')
+    # def post(self, request, *args, **kwargs):
+    #     # Get the current pk from the method dictionary
+    #     pk = kwargs.get('pk')
+    #     obj = self.model.objects.get(id=pk)
+    #     ride_as_string = str(obj)
+    #
+    #     if request.method == 'POST':
+    #
+    #         action = request.POST.get('action')
+    #         if action == 'delete':
+    #             for p in self.get_object().participants.all():
+    #                 print("Ride canceled. Send email to inform " + p.email)
+    #
+    #             # Redirect to all rides view after delete
+    #             Ride.objects.get(id=pk).delete()
+    #             messages.success(request, f'"{ride_as_string}" deleted and signed-up users notified.')
+    #     return redirect('rides')
+    #     # reverse('rides')
