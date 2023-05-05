@@ -4,15 +4,18 @@
         <div class="media-body">
             <div class="article-metadata">
 
-                <div><h3>Route: {{ ride.route.route_name }} </h3></div>
+                <div><h3>{{ ride.route.route_name }}</h3></div>
                 <div><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
                 <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
                 <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
 
                 <div class="text-muted"><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
                 <div class="text-muted">
-                    <strong>Leader:</strong> <a
+                    <strong>Leader:</strong>
+
+                    <a
                         href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
+
                 </div>
 
                 <div>

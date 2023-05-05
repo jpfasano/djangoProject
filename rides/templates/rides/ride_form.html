@@ -21,7 +21,11 @@
                     value="{{ object|yesno:'update, schedule' }}_and_email">{{ object|yesno:'Update, Schedule' }} and
                 email
             </button>
-            <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
+            {% if object %}
+                <a class="btn btn-outline-info" href="{% url 'ride_detail' object.id  %}">Cancel</a>
+            {% else %}
+                <a class="btn btn-outline-info" href="{% url 'rides' %}">Cancel</a>
+            {% endif %}
         </form>
     </div>
 {% endblock content %}

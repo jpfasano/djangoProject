@@ -5,15 +5,14 @@
             <div class="text-muted"><strong>Ride Date:</strong> {{ object.ride_date|date:"F d, Y" }}</div>
             <div class="text-muted"><strong>Start Time:</strong> {{ object.start_time }}</div>
             <div class="text-muted">
-                <strong>Leader:</strong> <a href="{% url 'user-rides' object.leader.username %}"> {{ object.leader.username }}</a>
+                <strong>Leader:</strong> <a
+                    href="{% url 'user-rides' object.leader.username %}"> {{ object.leader.username }}</a>
             </div>
-            <!--
-                    <div class="text-muted">Created: {{ object.date_posted|date:"F d, Y" }}</div>
-                    -->
+            <div>
+                <a class="btn  btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-detail' object.id %}">More
+                    details</a>
+            </div>
 
-        <a class="btn  btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-detail' object.id %}">More details</a>
-        <!--
-        <div class="text-muted"><a href="{% url 'ride-detail' object.id %}">More details</a> </div>
-        -->
+        </div>
     </div>
 </article>

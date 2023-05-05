@@ -41,7 +41,7 @@ class UserRidesListView(ListView):
         # return Ride.objects.filter(leader=user).order_by('-date_posted')
 
 
-class RidesDetailView(DetailView):  # SingleObjectMixin,FormView):
+class RidesDetailView(LoginRequiredMixin, DetailView):  # SingleObjectMixin,FormView):
     model = Ride
 
     # context_object_name = 'ride'
@@ -52,14 +52,16 @@ class RidesDetailView(DetailView):  # SingleObjectMixin,FormView):
         context = super().get_context_data(**kwargs)
         leader = self.get_object().leader
         participants = self.get_object().participants
-        user = self.request.user
         buttons_value = 'None'
-        if leader == user:
-            buttons_value = 'update_delete'
-        elif participants.filter(pk=user.pk).exists():
-            buttons_value = 'remove_participation'
-        else:
-            buttons_value = 'signup'
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            buttons_value = 'None'
+            if leader == user:
+                buttons_value = 'update_delete'
+            elif participants.filter(pk=user.pk).exists():
+                buttons_value = 'remove_participation'
+            else:
+                buttons_value = 'signup'
         context["buttons"] = buttons_value
         return context
 
@@ -105,7 +107,9 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
     form_class = CreateRideForm
 
     def form_valid(self, form):
+        # Current signed in user is the ride leader and a ride participant
         form.instance.leader = self.request.user
+        form.instance.participants.add(self.request.user)
         return super().form_valid(form)
 
 
