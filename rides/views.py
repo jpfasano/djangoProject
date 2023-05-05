@@ -25,7 +25,7 @@ class RidesListView(ListView):
     model = Ride
     template_name = 'rides/rides.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'rides'
-    # ordering = ['-date_posted']  # Newest to oldest
+    ordering = ['-ride_date']  # Newest to oldest
     paginate_by = 5
 
 
@@ -108,6 +108,7 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         # Current signed in user is the ride leader and a ride participant
+        form.save()
         form.instance.leader = self.request.user
         form.instance.participants.add(self.request.user)
         return super().form_valid(form)
