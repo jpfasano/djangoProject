@@ -35,7 +35,9 @@ class CreateRideForm(ModelForm):
     route = forms.ModelChoiceField(queryset=Route.objects.all())
     additional_details = forms.CharField(widget=CKEditorWidget(), required=False)
     # ride_date = forms.DateField(widget=DateInput(attrs={'width': 200}), initial=default_ride_date)
-    ride_date = forms.DateField(widget=DateInput(), initial=default_ride_date)
+    # ride_date = forms.DateField(widget=DateInput(), initial=default_ride_date)
+    ride_date = forms.DateField(widget=DateInput(attrs={'type': 'date', 'min': datetime.now().date()}),
+                                initial=default_ride_date)
     start_time = forms.TimeField(widget=TimeInput(), initial=default_ride_start_time)
 
     # def __init__(self, *args, **kwargs):

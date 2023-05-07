@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -15,18 +17,33 @@ from django.views.generic import (
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic.detail import SingleObjectMixin
+from django_filters.views import FilterView
+
+from .filters import RideFilter
 
 from .forms import CreateRideForm, UpdateRideForm
 from .models import Ride
 from django.contrib.auth.models import User
 
 
-class RidesListView(ListView):
+class RidesListView(FilterView):
     model = Ride
     template_name = 'rides/rides.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'rides'
     ordering = ['-ride_date']  # Newest to oldest
+    filterset_class = RideFilter
     paginate_by = 5
+
+    # def get_queryset(self):
+    #     today = date.today()
+    #     queryset = super().get_queryset()
+    #     queryset = queryset.filter(ride_date__gte=today)
+    #     return queryset
+
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['filter'] = RideFilter(self.request.GET, queryset=self.get_queryset() )
+    #     return context
 
 
 class UserRidesListView(ListView):
@@ -46,6 +63,7 @@ class RidesDetailView(LoginRequiredMixin, DetailView):  # SingleObjectMixin,Form
 
     # context_object_name = 'ride'
     # fields = []
+
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
