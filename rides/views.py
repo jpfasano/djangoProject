@@ -215,7 +215,7 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return False
 
     def get_success_url(self):
-        return reverse('rides')
+        return reverse('home')
 
     def form_valid(self, form):
         action = self.request.POST['action']

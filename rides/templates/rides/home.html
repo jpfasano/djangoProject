@@ -2,9 +2,16 @@
 {% load crispy_forms_filters %}
 {% block content %}
     <div class="container">
-        <h3>Upcoming Rides</h3>
-        {% for object in object_list %}
-            {% include "rides/inc_ride_article.html" %}
-        {% endfor %}
+        {%  if object_list %}
+            <h3>Upcoming Rides</h3>
+            {% for object in object_list %}
+                {% include "rides/inc_ride_article.html" %}
+            {% endfor %}
+        {% else %}
+            <h3>Currently there aren't any scheduled rides.</h3>
+            <p>
+                <a href="{% url 'ride-create' %}">Schedule a new ride.</a>
+            </p>
+        {% endif %}
     </div>
 {% endblock content %}
