@@ -3,11 +3,13 @@
         <div class="article-metadata">
             <div class="mr-2"><strong>Route:</strong> {{ object.route.route_name }}</div>
             <div class="text-muted"><strong>Ride Date:</strong> {{ object.ride_date|date:"F d, Y" }}</div>
+            <!--
             <div class="text-muted"><strong>Start Time:</strong> {{ object.start_time }}</div>
             <div class="text-muted">
                 <strong>Leader:</strong> <a
                     href="{% url 'user-rides' object.leader.username %}"> {{ object.leader.username }}</a>
             </div>
+            -->
             <div>
                 <a class="btn  btn-secondary btn-sm mt-1 mb-1" href="{% url 'ride-detail' object.id %}">More
                     details</a>

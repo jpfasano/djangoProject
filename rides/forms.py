@@ -4,9 +4,6 @@ from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from django.forms.utils import ErrorList
-
-from django.db import models
 
 from routes.models import Route
 from .models import Ride
@@ -57,9 +54,25 @@ class CreateRideForm(ModelForm):
         # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}
 
 
+class CreateRideReportForm(ModelForm):
+    ride_report_text = forms.CharField(widget=CKEditorWidget(), required=True)
+
+    def clean_ride_report_text(self):
+        # Not sure if this method is really needed.
+        ride_report_text = self.cleaned_data['ride_report_text']
+        if ride_report_text.strip() == "":
+            raise forms.ValidationError("Ride report textual description is required")
+        return ride_report_text
+
+    class Meta:
+        model = Ride
+        fields = ['ride_report_text']
+        # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}
+
+
 class UpdateRideForm(ModelForm):
     leader = forms.ModelChoiceField(User.objects.all(),
-        help_text='Caution: If the ride leader is changed, then only the new leader will be able to edit this ride.')
+                                    help_text='Caution: If the ride leader is changed, then only the new leader will be able to edit this ride.')
     route = forms.ModelChoiceField(queryset=Route.objects.all())
     additional_details = forms.CharField(widget=CKEditorWidget(), required=False)
     # ride_date = forms.DateField(widget=DateInput(attrs={'width': 200}), initial=default_ride_date)

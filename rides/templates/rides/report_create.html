@@ -6,23 +6,23 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                {% if object %}
-                    <legend class="border-bottom mb-4">Update Ride</legend>
+                {% if not 'create' %}
+                    <legend class="border-bottom mb-4">Update Ride Report</legend>
                 {% else %}
-                    <legend class="border-bottom mb-4">Schedule New Ride</legend>
+                    <legend class="border-bottom mb-4">Create New Ride Report</legend>
                 {% endif %}
                 {{ form.media }}
                 {{ form|crispy }}
             </fieldset>
             <button class="btn btn-outline-info" type="submit" name="action"
-                    value="{{ object|yesno:'update, schedule' }}">{{ object|yesno:'Update, Schedule' }}
+                    value="{{ create|yesno:'create, update' }}">{{ object|yesno:'Create, Update' }}
             </button>
             <button class="btn btn-outline-info" type="submit" name="action"
-                    value="{{ object|yesno:'update, schedule' }}_and_email">{{ object|yesno:'Update, Schedule' }} and
+                    value="{{ create|yesno:'create, update' }}_and_email">{{ object|yesno:'Create, Update' }} and
                 email
             </button>
-            {% if object %}
-                <a class="btn btn-outline-info" href="{% url 'ride_detail' object.id  %}">Cancel</a>
+            {% if create %}
+                <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
             {% else %}
                 <a class="btn btn-outline-info" href="{% url 'home' %}">Cancel</a>
             {% endif %}
