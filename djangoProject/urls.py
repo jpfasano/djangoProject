@@ -38,6 +38,6 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'),
          name='password_reset_complete'),
 
-    path('', include('routes.urls')),
-    path('rides/', include('rides.urls')),
+    path('routes/', include('routes.urls')),
+    path('', include('rides.urls')),
 ]

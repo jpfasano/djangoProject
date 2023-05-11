@@ -93,10 +93,3 @@ class RoutesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return reverse('routes')
 
-
-def about(request):
-    return render(request, 'routes/about.html', {'title': 'About Routes'})
-
-
-def home(request):
-    return render(request, 'routes/home.html', {'title': 'ADKEzRiders Home Page'})

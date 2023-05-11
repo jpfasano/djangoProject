@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="container">
+        <h3>Upcoming Rides</h3>
+        {% for object in object_list %}
+            {% include "rides/inc_ride_article.html" %}
+        {% endfor %}
+    </div>
+{% endblock content %}

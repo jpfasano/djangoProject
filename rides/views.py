@@ -26,6 +26,34 @@ from .models import Ride
 from django.contrib.auth.models import User
 
 
+def about(request):
+    return render(request, 'rides/about.html', {'title': 'About Routes'})
+
+
+def home(request):
+    return render(request, 'rides/home.html', {'title': 'ADKEzRiders Home Page'})
+
+
+class ScheduledRides(ListView):
+    model = Ride
+    template_name = 'rides/home.html'  # <app>/<model>_<viewtype>.html
+    context_object_name = 'rides'
+    ordering = ['ride_date']  # Newest to oldest
+    # filterset_class = RideFilter
+    # paginate_by = 5
+
+    def get_queryset(self):
+        today = date.today()
+        queryset = super().get_queryset()
+        queryset = queryset.filter(ride_date__gte=today)
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = RideFilter(self.request.GET, queryset=self.get_queryset() )
+        return context
+
+
 class RidesListView(FilterView):
     model = Ride
     template_name = 'rides/rides.html'  # <app>/<model>_<viewtype>.html
@@ -63,7 +91,6 @@ class RidesDetailView(LoginRequiredMixin, DetailView):  # SingleObjectMixin,Form
 
     # context_object_name = 'ride'
     # fields = []
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -200,7 +227,7 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             pk = self.kwargs.get('pk')
             obj = self.model.objects.get(id=pk)
             ride_as_string = str(obj)
-            messages.success(self.request, "The ride '"+ ride_as_string+"' has been canceled")
+            messages.success(self.request, "The ride '" + ride_as_string + "' has been canceled")
         return super().form_valid(form)
 
     # def post(self, request, *args, **kwargs):
