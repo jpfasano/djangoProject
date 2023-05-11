@@ -141,6 +141,13 @@ class RidesDetailView(LoginRequiredMixin, DetailView):  # SingleObjectMixin,Form
                     buttons_value += ' create_trip_report'
 
         context["buttons"] = buttons_value
+
+        # Is there a ride report?
+        ride_report_text = self.get_object().ride_report_text
+        if ride_report_text is not None:
+            context['ride_report'] = True
+
+
         return context
 
     def post(self, request, *args, **kwargs):

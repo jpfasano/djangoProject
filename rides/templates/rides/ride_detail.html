@@ -5,6 +5,12 @@
             <div class="article-metadata">
 
                 <div><h3>{{ ride.route.route_name }}</h3></div>
+                {% if ride_report %}
+                    <div>
+                    <strong>Ride Report:</strong>
+                    <div class="ml-4">{{ ride.ride_report_text|safe }}</div>
+                </div>
+                {% endif %}
                 <div><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
                 <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
                 <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
