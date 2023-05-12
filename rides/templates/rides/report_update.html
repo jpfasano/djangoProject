@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Update Ride Report</legend>
+                {{ form.media }}
+                {{ form|crispy }}
+            </fieldset>
+            <button class="btn btn-outline-info" type="submit" name="action"
+                    value="update">Update
+            </button>
+            <button class="btn btn-outline-info" type="submit" name="action"
+                    value="update_and_email">Update and email
+            </button>
+            <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
+        </form>
+    </div>
+{% endblock content %}

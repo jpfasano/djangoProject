@@ -54,15 +54,15 @@ class CreateRideForm(ModelForm):
         # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}
 
 
-class CreateRideReportForm(ModelForm):
-    ride_report_text = forms.CharField(widget=CKEditorWidget(), required=True)
+class UpdateRideReportForm(ModelForm):
+    ride_report_text = forms.CharField(widget=CKEditorWidget(), required=False)
 
-    def clean_ride_report_text(self):
-        # Not sure if this method is really needed.
-        ride_report_text = self.cleaned_data['ride_report_text']
-        if ride_report_text.strip() == "":
-            raise forms.ValidationError("Ride report textual description is required")
-        return ride_report_text
+    # def clean_ride_report_text(self):
+    #     # Not sure if this method is really needed.
+    #     ride_report_text = self.cleaned_data['ride_report_text']
+    #     if ride_report_text.strip() == "":
+    #         raise forms.ValidationError("Ride report textual description is required")
+    #     return ride_report_text
 
     class Meta:
         model = Ride
