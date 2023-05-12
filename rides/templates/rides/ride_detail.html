@@ -71,11 +71,11 @@
                 </button>
             </form>
         {% endif %}
-        {% if 'create_trip_report' in buttons %}
+        {% if 'update_trip_report' in buttons %}
             <form method="post">
                 {% csrf_token %}
-                <button class="btn btn-outline-info" type="submit" name="action" value="create_trip_report">
-                    Create Trip Report
+                <button class="btn btn-outline-info" type="submit" name="action" value="update_trip_report">
+                    Update Ride Report
                 </button>
             </form>
         {% endif %}
