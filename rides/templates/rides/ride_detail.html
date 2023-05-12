@@ -12,24 +12,26 @@
                 </div>
                 {% endif %}
                 <div><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
-                <div class="text-muted"><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
-                <div class="text-muted"><strong>Start Time:</strong> {{ ride.start_time }}</div>
+                <div><strong>Ride Date:</strong> {{ ride.ride_date|date:"F d, Y" }}</div>
+                <div><strong>Start Time:</strong> {{ ride.start_time }}</div>
 
-                <div class="text-muted"><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
-                <div class="text-muted">
-                    <strong>Leader:</strong>
-
-                    <a
-                        href="{% url 'user-rides' ride.leader.username %}"> {{ ride.leader.username }}</a>
-
-                </div>
+                <div><strong>Distance:</strong> {{ ride.route.distance }} miles</div>
 
                 <div>
-                    <strong>Leader Name:</strong> {{ ride.leader.first_name }} {{ ride.leader.last_name }}
+                    <strong>Leader Name:</strong>
+                    <a href="{% url 'user-rides' ride.leader.username %}">
+                        {{ ride.leader.first_name }} {{ ride.leader.last_name }}
+                    </a>
                 </div>
-                <div>
-                    <strong>Leader email:</strong> {{ ride.leader.email }}
-                </div>
+                <!-- Don't display email and phone after the ride has occurred -->
+                {% if 'update_delete' in buttons %}
+                    <div>
+                        <strong>Leader Email:</strong> {{ ride.leader.email }}
+                    </div>
+                    <div>
+                        <strong>Leader Phone:</strong> {{ ride.leader.profile.phone }}
+                    </div>
+                {% endif %}
                 <div>
                     <strong>Route Details:</strong>
                     <div class="ml-4">{{ ride.route.description|safe }}</div>

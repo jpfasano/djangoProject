@@ -4,18 +4,28 @@
         <div class="media-body">
             <h2 class="article-title"> {{ object.route_name }} </h2>
             <div class="article-metadata">
-                Author: <a class="mr-2" href="{% url 'user-routes' object.author.username  %}">{{ object.author }}</a>
+                Author:
+                <a class="mr-2" href="{% url 'user-routes' object.author.username  %}">
+                    {{ object.author.first_name }} {{ object.author.last_name }}
+                </a>
                 <div class="text-muted">Distance: {{ object.distance }} miles</div>
                 <div class="text-muted">Created: {{ object.date_posted|date:"F d, Y" }}</div>
-                <div>
-                    {% if object.author == user %}
-                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'route-update' object.id %}">Update</a>
-                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'route-delete' object.id %}">Delete</a>
-                    {% endif %}
-                </div>
             </div>
-            <p class="article-content">{{ object.description|safe }}</p>
-            <p class="article-content">Starting Location: {{ object.start_location|safe }}</p>
+            <div>
+                <strong>Route Details:</strong>
+                <div class="ml-4">{{ object.description|safe }}</div>
+            </div>
+            <div>
+                <strong>Route Starting Location:</strong>
+                <div class="ml-4">{{ object.start_location|safe }}</div>
+            </div>
+
+            <div>
+                {% if object.author == user %}
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'route-update' object.id %}">Update</a>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'route-delete' object.id %}">Delete</a>
+                {% endif %}
+            </div>
         </div>
     </article>
 {% endblock content %}

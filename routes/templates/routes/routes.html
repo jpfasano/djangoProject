@@ -5,7 +5,10 @@
           <div class="media-body">
             <h2><a class="article-title" href="{% url 'route-detail' route.id %}">{{ route.route_name }}</a></h2>
             <div class="article-metadata">
-              Author: <a class="mr-2" href="{% url 'user-routes' route.author.username  %}">{{ route.author }}</a>
+              Author:
+                <a class="mr-2" href="{% url 'user-routes' route.author.username  %}">
+                    {{ route.author.first_name }} {{ route.author.last_name }}
+                </a>
               <div class="text-muted">Distance: {{  route.distance }} miles</div>
               <div class="text-muted">Created: {{ route.date_posted|date:"F d, Y" }}</div>
             </div>
