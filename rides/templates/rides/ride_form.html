@@ -22,7 +22,7 @@
                 email
             </button>
             {% if object %}
-                <a class="btn btn-outline-info" href="{% url 'ride_detail' object.id  %}">Cancel</a>
+                <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
             {% else %}
                 <a class="btn btn-outline-info" href="{% url 'home' %}">Cancel</a>
             {% endif %}
