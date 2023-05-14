@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
-import ckeditor_uploader.backends
+# import ckeditor_uploader.backends
 from keyring import get_credential
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'phone_field',
     'ckeditor',
-    'ckeditor_uploader',
+    # 'ckeditor_uploader',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -169,25 +169,26 @@ CKEDITOR_CONFIGS = {
         'toolbarCanCollapse': True,
     },
 
-    'uploading_ckeditor': {
-        'toolbar': [
-            ['Undo', 'Redo',
-             '-', 'Bold', 'Italic', 'Underline', 'BulletedList', 'NumberedList', 'Outdent', 'Indent',
-             '-', 'Link', 'Unlink', 'TextColor', 'BGColor', 'Table', 'Image',
-             '-', 'Format',
-             '-', 'Source', 'Maximize',
-             ],
-        ],
-        'initialWidth': '100%',
-        'width': 'auto',
-        'toolbarCanCollapse': True,
-    },
+    # 'uploading_ckeditor': {
+    #     'toolbar': [
+    #         ['Undo', 'Redo',
+    #          '-', 'Bold', 'Italic', 'Underline', 'BulletedList', 'NumberedList', 'Outdent', 'Indent',
+    #          '-', 'Link', 'Unlink', 'TextColor', 'BGColor', 'Table', 'Image',
+    #          '-', 'Format',
+    #          '-', 'Source', 'Maximize',
+    #          ],
+    #     ],
+    #     # 'extra_plugins': 'uploadimage',
+    #     'initialWidth': '100%',
+    #     'width': 'auto',
+    #     'toolbarCanCollapse': True,
+    # },
 }
 
 # May be needed.  See Step 4 of https://django-ckeditor.readthedocs.io/en/latest/#installation
-# CKEDITOR_BASEPATH = STATIC_URL + 'ckeditor/ckeditor'
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_ALLOW_NONIMAGE_FILES = False
-CKEDITOR_IMAGE_BACKEND = 'ckeditor_uploader.backends.PillowBackend'
-CKEDITOR_FORCE_JPEG_COMPRESSION = True
-CKEDITOR_IMAGE_QUALITY = 75
+# # CKEDITOR_BASEPATH = STATIC_URL + 'ckeditor/ckeditor'
+# CKEDITOR_UPLOAD_PATH = "uploads/"
+# CKEDITOR_ALLOW_NONIMAGE_FILES = False
+# CKEDITOR_IMAGE_BACKEND = 'ckeditor_uploader.backends.PillowBackend'
+# CKEDITOR_FORCE_JPEG_COMPRESSION = True
+# CKEDITOR_IMAGE_QUALITY = 75
