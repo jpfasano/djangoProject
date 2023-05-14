@@ -1,6 +1,7 @@
 from datetime import datetime, date, timedelta
 
 from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm
@@ -55,7 +56,7 @@ class CreateRideForm(ModelForm):
 
 
 class UpdateRideReportForm(ModelForm):
-    ride_report_text = forms.CharField(widget=CKEditorWidget(), required=False)
+    ride_report_text = forms.CharField(widget=CKEditorUploadingWidget(config_name='uploading_ckeditor'), required=False)
 
     # def clean_ride_report_text(self):
     #     # Not sure if this method is really needed.

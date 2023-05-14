@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -15,7 +16,7 @@ class Ride(models.Model):
     ride_date = models.DateField()
     start_time = models.TimeField()
     participants = models.ManyToManyField(User, related_name='ride_participants')
-    ride_report_text = RichTextField(blank=False, null=False)
+    ride_report_text = RichTextUploadingField(blank=False, null=False)
 
     # Route also a foreign key.
     # Date

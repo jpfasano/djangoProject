@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+
+import ckeditor_uploader.backends
 from keyring import get_credential
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'phone_field',
     'ckeditor',
+    'ckeditor_uploader',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -62,7 +65,7 @@ ROOT_URLCONF = 'djangoProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ os.path.join( BASE_DIR, 'templates' )],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +86,7 @@ WSGI_APPLICATION = 'djangoProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join( BASE_DIR,  'db.sqlite3' ),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -121,9 +124,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, os.path.join("djangoProject", "static"))
+    # os.path.join(BASE_DIR, os.path.join("djangoProject", "static"))
+    BASE_DIR / "djangoProject" / "static"
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = BASE_DIR / 'static'
+
+MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join( BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -159,4 +168,26 @@ CKEDITOR_CONFIGS = {
         'width': 'auto',
         'toolbarCanCollapse': True,
     },
+
+    'uploading_ckeditor': {
+        'toolbar': [
+            ['Undo', 'Redo',
+             '-', 'Bold', 'Italic', 'Underline', 'BulletedList', 'NumberedList', 'Outdent', 'Indent',
+             '-', 'Link', 'Unlink', 'TextColor', 'BGColor', 'Table', 'Image',
+             '-', 'Format',
+             '-', 'Source', 'Maximize',
+             ],
+        ],
+        'initialWidth': '100%',
+        'width': 'auto',
+        'toolbarCanCollapse': True,
+    },
 }
+
+# May be needed.  See Step 4 of https://django-ckeditor.readthedocs.io/en/latest/#installation
+# CKEDITOR_BASEPATH = STATIC_URL + 'ckeditor/ckeditor'
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_IMAGE_BACKEND = 'ckeditor_uploader.backends.PillowBackend'
+CKEDITOR_FORCE_JPEG_COMPRESSION = True
+CKEDITOR_IMAGE_QUALITY = 75
