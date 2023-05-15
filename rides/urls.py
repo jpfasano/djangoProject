@@ -6,7 +6,8 @@ from .views import (
     RidesCreateView,
     RidesUpdateView,
     RidesDeleteView,
-    UserRidesListView, ScheduledRides, CompletedRides, RidesReportUpdateView, PictureCreateView
+    UserRidesListView, ScheduledRides, CompletedRides, RidesReportUpdateView, PictureCreateView,
+    PictureUpdateView
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('rides/<int:pk>/update/', RidesUpdateView.as_view(), name='ride-update'),
     path('rides/<int:pk>/delete/', RidesDeleteView.as_view(), name='ride-delete'),
     path('rides/<int:pk>/add-picture', PictureCreateView.as_view(), name='add-picture'),
+    path('rides/update-picture/<int:pk>', PictureUpdateView.as_view(), name='update-picture'),
 ]

@@ -98,7 +98,23 @@ class UpdateRideForm(ModelForm):
         # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}
 
 
-class PictureForm(ModelForm):
+class CreatePictureForm(ModelForm):
     class Meta:
         model = Picture
         fields = ('picture', 'caption')
+
+
+class UpdatePictureForm(ModelForm):
+    picture = forms.ImageField()
+    caption = forms.CharField()
+
+    # def clean_ride_date(self):
+    #     ride_date = self.cleaned_data['ride_date']
+    #     if ride_date < date.today():
+    #         raise forms.ValidationError("The date cannot be in the past")
+    #     return ride_date
+
+    class Meta:
+        model = Ride
+        fields = ['picture', 'caption']
+        # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}

@@ -4,7 +4,7 @@
 {% block content %}
     <div class="content-section">
 
-        <h3 class="border-bottom mb-4">Update Picture in a Ride Report</h3>
+        <h3 class="border-bottom mb-4">Add Picture to Ride Report</h3>
         <div><strong>Route:</strong> {{ route_name }} </div>
         <div><strong>Ride date:</strong> {{ ride_date }} </div>
         <form method="POST" enctype="multipart/form-data">
@@ -14,7 +14,7 @@
                 {{ form|crispy }}
             </fieldset>
 
-            <button class="btn btn-success" type="submit">Update</button>
+            <button class="btn btn-success" type="submit">Upload</button>
             <a class="btn btn-primary" href="{% url 'ride-report-update' ride_pk  %}">Cancel</a>
         </form>
     </div>

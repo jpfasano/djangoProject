@@ -22,8 +22,8 @@ from django_filters.views import FilterView
 
 from .filters import RideFilter
 
-from .forms import CreateRideForm, UpdateRideForm, UpdateRideReportForm, PictureForm
-from .models import Ride
+from .forms import CreateRideForm, UpdateRideForm, UpdateRideReportForm, CreatePictureForm, UpdatePictureForm
+from .models import Ride, Picture
 from django.contrib.auth.models import User
 
 
@@ -249,7 +249,7 @@ class RidesReportUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
             if success_message is not None:
                 messages.success(self.request, success_message)
         else:
-            messages.warning(self.request, 'No changes detected. Ride report not updated')
+            messages.info(self.request, 'No changes detected in trip report text.')
             pass
         return super().form_valid(form)
 
@@ -331,12 +331,24 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return super().form_valid(form)
 
 
+# Ride reports can only be updated by participants after the ride
+def ride_report_test_func(x):
+    ride = x.get_object()
+    # Only ride participants can create ride report pictures
+    if x.request.user not in ride.participants.all():
+        return False
+    # Ride reports can only be entered after the ride
+    today = date.today()
+    if today < ride.ride_date:
+        return False
+    return True
+
 
 class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Ride
     # fields = ['route', 'ride_date', 'start_time', 'additional_details']
-    form_class = PictureForm
-    template_name = 'rides/picture_update.html'
+    form_class = CreatePictureForm
+    template_name = 'rides/picture_create.html'
     success_url = 'update-report'
 
     def form_valid(self, form):
@@ -352,11 +364,14 @@ class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     # Only the ride participants are allowed to create.
     def test_func(self):
         ride = self.get_object()
-        if self.request.user in ride.participants.all():
-            # if ride.participants.filter(pk=self.request.user).exists():
-            return True
-        else:
+        # Only ride participants can create ride report pictures
+        if self.request.user not in ride.participants.all():
             return False
+        # Ride reports can only be entered after the ride
+        today = date.today()
+        if today < ride.ride_date:
+            return False
+        return True
 
     def get_context_data(self, **kwargs):
         # Get the current pk from the method dictionary
@@ -369,3 +384,69 @@ class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         context['ride_date'] = ride_date
         context['ride_pk'] = pk
         return context
+
+
+class PictureUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Picture
+    # fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
+    form_class = UpdatePictureForm
+    template_name = 'rides/picture_update.html'
+    success_url = 'update-report'
+
+    # def form_valid(self, form):
+    #     form.instance.leader = self.request.user
+    #     return super().form_valid(form)
+
+    # Check to make sure user is allowed to update the ride.
+    # Only the ride's leader is allowed to update.
+    def test_func(self):
+        picture = self.get_object()
+        ride = picture.ride
+        # Only ride participants can create ride report pictures
+        if self.request.user not in ride.participants.all():
+            return False
+        # Ride reports can only be entered after the ride
+        today = date.today()
+        if today < ride.ride_date:
+            return False
+        return True
+
+    def get_success_url(self):
+        ride = self.get_object().ride
+        ride_pk = ride.pk
+        return f'/rides/{ride_pk}/update-report'
+
+    def get_context_data(self, **kwargs):
+        # Get the current pk from the method dictionary
+        pk = self.kwargs['pk']
+        picture = self.model.objects.get(id=pk)
+        ride = picture.ride
+        ride_date = ride.ride_date
+        route = ride.route.route_name
+        context = super().get_context_data(**kwargs)
+        context['route_name'] = route
+        context['ride_date'] = ride_date
+        context['ride_pk'] = ride.pk
+        return context
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        # form.send_email()
+        if form.has_changed():
+            success_message = ''
+            if 'picture' in form.changed_data:
+                old_picture = self.get_object()
+                new_picture = form.cleaned_data.get('picture')
+                if new_picture:
+                    old_picture.picture.delete()
+                    success_message += "Picture changed.  "
+
+            if 'caption' in form.changed_data:
+                success_message += "Picture's caption changed. "
+
+            if success_message != '':
+                messages.success(self.request, success_message)
+        else:
+            messages.warning(self.request, 'No changes detected. Picture not updated')
+        return super().form_valid(form)
