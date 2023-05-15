@@ -330,24 +330,6 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             messages.success(self.request, "The ride '" + ride_as_string + "' has been canceled")
         return super().form_valid(form)
 
-    # def post(self, request, *args, **kwargs):
-    #     # Get the current pk from the method dictionary
-    #     pk = kwargs.get('pk')
-    #     obj = self.model.objects.get(id=pk)
-    #     ride_as_string = str(obj)
-    #
-    #     if request.method == 'POST':
-    #
-    #         action = request.POST.get('action')
-    #         if action == 'delete':
-    #             for p in self.get_object().participants.all():
-    #                 print("Ride canceled. Send email to inform " + p.email)
-    #
-    #             # Redirect to all rides view after delete
-    #             Ride.objects.get(id=pk).delete()
-    #             messages.success(request, f'"{ride_as_string}" deleted and signed-up users notified.')
-    #     return redirect('rides')
-    #     # reverse('rides')
 
 
 class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):

@@ -51,7 +51,18 @@
                         </div>
                     {% endfor %}
                 </div>
-
+                <!-- Display Pictures -->
+                <div class="mt-3">
+                    {% for picture in ride.report_pictures.all %}
+                        <div>
+                            <figure class="figure">
+                                <img src="{{picture.picture.url}}" class="figure-img img-fluid rounded"
+                                     alt="{{ picture.caption }}">
+                                <figcaption class="figure-caption">{{ picture.caption }}</figcaption>
+                            </figure>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </article>

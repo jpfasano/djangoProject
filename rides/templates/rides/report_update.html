@@ -2,7 +2,7 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
+    <div class="content-section" xmlns="http://www.w3.org/1999/html">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -10,8 +10,26 @@
                 {{ form.media }}
                 {{ form|crispy }}
             </fieldset>
+            <!-- Display Pictures -->
+            <div class="mt-3">
+                {% for picture in ride.report_pictures.all %}
+                    <figure class="figure">
+                        <div  class="d-flex justify-content-between">
+                            <div>
+                                <img src="{{picture.picture.url}}" class="figure-img img-fluid rounded"
+                                     alt="{{ picture.caption }}">
+                            </div>
+                            <div>
+                                <button class="ml-1 mb-2 btn btn-outline-info">Update picture</button>
+                                <button class="ml-1 mb-2 btn btn-outline-info">Delete delete</button>
+                            </div>
+                        </div>
+                        <figcaption class="figure-caption">{{ picture.caption }}</figcaption>
+                    </figure>
+                {% endfor %}
+            </div>
             <div class="mb-3">
-                <a class="btn btn-light" href="{% url 'add-picture' object.id  %}">Add picture</a>
+                <a class="btn btn-outline-info" href="{% url 'add-picture' object.id  %}">Add picture</a>
             </div>
             <button class="btn btn-success" type="submit" name="action"
                     value="update">Update
