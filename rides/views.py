@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.shortcuts import render
@@ -21,7 +22,7 @@ from django_filters.views import FilterView
 
 from .filters import RideFilter
 
-from .forms import CreateRideForm, UpdateRideForm, UpdateRideReportForm
+from .forms import CreateRideForm, UpdateRideForm, UpdateRideReportForm, PictureForm
 from .models import Ride
 from django.contrib.auth.models import User
 
@@ -217,7 +218,7 @@ class RidesReportUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     #     context['create'] = True
     #     return context
 
-    # Check to make sure user is allowed to create the ride report.
+    # Check to make sure user is allowed to Update the ride report.
     # Only the ride participants are allowed to create.
     def test_func(self):
         ride = self.get_object()
@@ -266,10 +267,15 @@ class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     # Only the ride's leader is allowed to update.
     def test_func(self):
         ride = self.get_object()
-        if self.request.user == ride.leader:
-            return True
-        else:
-            return False
+        if self.request.user != ride.leader:
+            # Raising the exception does not display message on browser.
+            raise PermissionDenied("Only the ride leader can update the ride.")
+        today = date.today()
+        if today > ride.ride_date:
+            msg = 'Ride details can not be updated after ride. '
+            msg += 'A ride report can now be created/updated.'
+            raise PermissionDenied(msg)
+        return True
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -342,3 +348,42 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     #             messages.success(request, f'"{ride_as_string}" deleted and signed-up users notified.')
     #     return redirect('rides')
     #     # reverse('rides')
+
+
+class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Ride
+    # fields = ['route', 'ride_date', 'start_time', 'additional_details']
+    form_class = PictureForm
+    template_name = 'rides/picture_update.html'
+    success_url = 'update-report'
+
+    def form_valid(self, form):
+        picture = form.save(commit=False)
+        pk = self.kwargs.get('pk')
+        ride = self.model.objects.get(id=pk)
+        picture.ride = ride
+        picture.save()
+        messages.success(self.request, "Picture added to ride report.")
+        return super().form_valid(form)
+
+    # Check to make sure user is allowed to Update the ride report.
+    # Only the ride participants are allowed to create.
+    def test_func(self):
+        ride = self.get_object()
+        if self.request.user in ride.participants.all():
+            # if ride.participants.filter(pk=self.request.user).exists():
+            return True
+        else:
+            return False
+
+    def get_context_data(self, **kwargs):
+        # Get the current pk from the method dictionary
+        pk = self.kwargs['pk']
+        ride = self.model.objects.get(id=pk)
+        ride_date = ride.ride_date
+        route = ride.route.route_name
+        context = super().get_context_data(**kwargs)
+        context['route_name'] = route
+        context['ride_date'] = ride_date
+        context['ride_pk'] = pk
+        return context

@@ -1,4 +1,13 @@
 from django.contrib import admin
-from .models import Ride
+from .models import Ride, Picture
 
-admin.site.register(Ride)
+
+class PictureInLine(admin.TabularInline):
+    model = Picture
+
+
+class RideAdmin(admin.ModelAdmin):
+    inlines = [PictureInLine]
+
+
+admin.site.register(Ride, RideAdmin)

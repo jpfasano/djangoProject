@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 
 from routes.models import Route
-from .models import Ride
+from .models import Ride, Picture
 
 
 class DateInput(forms.DateInput):
@@ -96,3 +96,9 @@ class UpdateRideForm(ModelForm):
         model = Ride
         fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
         # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}
+
+
+class PictureForm(ModelForm):
+    class Meta:
+        model = Picture
+        fields = ('picture', 'caption')

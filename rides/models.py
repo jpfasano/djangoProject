@@ -5,6 +5,8 @@ from ckeditor.fields import RichTextField
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.files.storage import default_storage
+from django.utils.crypto import get_random_string
 
 from routes.models import Route
 
@@ -58,3 +60,39 @@ class Ride(models.Model):
 
     class Meta:
         ordering = ['-ride_date']
+
+
+# ----------------------------------
+
+def get_up_load_path(instance, filename):
+    pass
+    path = 'pictures/'
+    ride_date = instance.ride.ride_date.strftime('%Y-%m-%d')
+    path += ride_date + '/'
+    path += filename
+    upload_path = path
+    while default_storage.exists(upload_path):
+        last_dot_index = upload_path.rfind('.')
+        pre_extension = upload_path[:last_dot_index]
+        extension = upload_path[last_dot_index:]
+        random_string = get_random_string(length=4)
+        upload_path = pre_extension + '_' + random_string + extension
+    return upload_path
+
+
+class Picture(models.Model):
+    picture = models.ImageField(upload_to=get_up_load_path)
+    # picture = models.ImageField(upload_to='pictures/')
+    caption = models.CharField(max_length=512)
+    ride = models.ForeignKey('Ride',on_delete=models.CASCADE,related_name='report_pictures')
+
+    # blog_entry = BlogEntry.objects.get(pk=1)  # Assuming you have a specific BlogEntry instance
+    # # Retrieve all associated pictures for the given BlogEntry
+    # associated_pictures = blog_entry.report_pictures.all()
+
+    def delete(self, *args, **kwargs):
+        # Delete the picture file from the media directory
+        if self.picture:
+            default_storage.delete(self.picture.name)
+        super().delete(*args, **kwargs)
+

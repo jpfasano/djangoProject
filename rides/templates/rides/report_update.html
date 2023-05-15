@@ -10,13 +10,16 @@
                 {{ form.media }}
                 {{ form|crispy }}
             </fieldset>
-            <button class="btn btn-outline-info" type="submit" name="action"
+            <div class="mb-3">
+                <a class="btn btn-light" href="{% url 'add-picture' object.id  %}">Add picture</a>
+            </div>
+            <button class="btn btn-success" type="submit" name="action"
                     value="update">Update
             </button>
-            <button class="btn btn-outline-info" type="submit" name="action"
+            <button class="btn btn-primary" type="submit" name="action"
                     value="update_and_email">Update and email
             </button>
-            <a class="btn btn-outline-info" href="{% url 'ride-detail' object.id  %}">Cancel</a>
+            <a class="btn btn-primary" href="{% url 'ride-detail' object.id  %}">Cancel</a>
         </form>
     </div>
 {% endblock content %}
