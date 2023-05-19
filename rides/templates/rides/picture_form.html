@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <div class="content-section">
+                    <h3 class="border-bottom mb-4">
+                        {% if object %}
+                            Change Picture's Caption
+                        {% else %}
+                            Add Picture to Ride Report
+                        {% endif %}
+                    </h3>
+                    <div><strong>Route:</strong> {{ route_name }} </div>
+                    <div><strong>Ride date:</strong> {{ ride_date }} </div>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+
+                            {{ form|crispy }}
+                        </fieldset>
+
+                        <!-- your_template.html -->
+                        {% if form.instance.picture %}
+                            <img src="{{ form.instance.picture.url }}" alt="Image">
+                        {% endif %}
+                        <div>
+                        <button class="btn btn-success mt-1 mb-1" type="submit">
+                            {% if object %}
+                                Update
+                            {% else %}
+                                Upload
+                            {% endif %}
+                        </button>
+                        <a class="btn btn-primary" href="{% url 'ride-report-update' ride_pk %}">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock content %}

@@ -20,8 +20,10 @@
                                      alt="{{ picture.caption }}">
                             </div>
                             <div>
-                                <a class="ml-1 mb-2 btn btn-outline-info" href="{% url 'update-picture' picture.id  %}">Update picture</a>
-                                <button class="ml-1 mb-2 btn btn-outline-danger">Delete picture</button>
+                                <a class="ml-1 mb-2 btn btn-outline-info"
+                                   href="{% url 'update-picture-caption' picture.id  %}">Update caption</a>
+                                <a class="ml-1 mb-2 btn btn-outline-danger"
+                                href="{% url 'delete-picture' picture.id  %}">Delete picture</a>
                             </div>
                         </div>
                         <figcaption class="figure-caption">{{ picture.caption }}</figcaption>

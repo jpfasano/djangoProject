@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <h2>Confirm deletion of picture</h2>
+
+                    <figure class="figure">
+                        <div  class="d-flex justify-content-between">
+                            <div>
+                                <img src="{{object.picture.url}}" class="figure-img img-fluid rounded"
+                                     alt="{{ object.caption }}">
+                            </div>
+                        </div>
+                        <figcaption class="figure-caption">{{ object.caption }}</figcaption>
+                    </figure>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit" name="action" value="delete">Yes, Delete Picture
+                </button>
+                <a class="btn btn-outline-secondary" href="{% url 'ride-update' object.id %}">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+{% endblock content %}

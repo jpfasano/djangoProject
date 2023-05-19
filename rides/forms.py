@@ -105,7 +105,7 @@ class CreatePictureForm(ModelForm):
 
 
 class UpdatePictureForm(ModelForm):
-    picture = forms.ImageField()
+    # picture = forms.ImageField()
     caption = forms.CharField()
 
     # def clean_ride_date(self):
@@ -116,5 +116,5 @@ class UpdatePictureForm(ModelForm):
 
     class Meta:
         model = Ride
-        fields = ['picture', 'caption']
+        fields = ['caption']
         # widgets = {'ride_date': DateInput(), 'start_time': TimeInput()}

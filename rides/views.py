@@ -1,30 +1,25 @@
 from datetime import date
 
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views import View
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import (
     ListView,
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView, FormView
+    DeleteView
 )
-
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
-from django.views.generic.detail import SingleObjectMixin
 from django_filters.views import FilterView
 
 from .filters import RideFilter
-
 from .forms import CreateRideForm, UpdateRideForm, UpdateRideReportForm, CreatePictureForm, UpdatePictureForm
 from .models import Ride, Picture
-from django.contrib.auth.models import User
 
 
 def about(request):
@@ -196,7 +191,7 @@ class RidesCreateView(LoginRequiredMixin, CreateView):
     form_class = CreateRideForm
 
     def form_valid(self, form):
-        # Current signed in user is the ride leader and a ride participant
+        # Current signed-in user is the ride leader and a ride participant
         form.save()
         form.instance.leader = self.request.user
         form.instance.participants.add(self.request.user)
@@ -222,11 +217,8 @@ class RidesReportUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     # Only the ride participants are allowed to create.
     def test_func(self):
         ride = self.get_object()
-        if self.request.user in ride.participants.all():
-            # if ride.participants.filter(pk=self.request.user).exists():
-            return True
-        else:
-            return False
+        user = self.request.user
+        return ride_report_test_func(ride, user)
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -267,15 +259,8 @@ class RidesUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     # Only the ride's leader is allowed to update.
     def test_func(self):
         ride = self.get_object()
-        if self.request.user != ride.leader:
-            # Raising the exception does not display message on browser.
-            raise PermissionDenied("Only the ride leader can update the ride.")
-        today = date.today()
-        if today > ride.ride_date:
-            msg = 'Ride details can not be updated after ride. '
-            msg += 'A ride report can now be created/updated.'
-            raise PermissionDenied(msg)
-        return True
+        user = self.request.user
+        return ride_test_func(ride, user)
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -309,10 +294,8 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     # Only the ride's leader is allowed to delete.
     def test_func(self):
         ride = self.get_object()
-        if self.request.user == ride.leader:
-            return True
-        else:
-            return False
+        user = self.request.user
+        return ride_test_func(ride, user)
 
     def get_success_url(self):
         return reverse('home')
@@ -331,16 +314,33 @@ class RidesDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return super().form_valid(form)
 
 
-# Ride reports can only be updated by participants after the ride
-def ride_report_test_func(x):
-    ride = x.get_object()
+# Rides can only be updated by the leader before the ride,
+def ride_test_func(ride, user):
     # Only ride participants can create ride report pictures
-    if x.request.user not in ride.participants.all():
-        return False
+    if user != ride.leader:
+        # Raising the exception does not display message on browser.
+        raise PermissionDenied("Only the ride leader can update the ride.")
+    # Ride reports can only be entered after the ride
+    today = date.today()
+    if today > ride.ride_date:
+        msg = 'Ride details can not be updated after ride. '
+        msg += 'A ride report can now be created/updated.'
+        raise PermissionDenied(msg)
+    return True
+
+
+# Ride reports can only be updated by participants after the ride,
+# after the ride has been completed.
+def ride_report_test_func(ride, user):
+    # Only ride participants can create ride report pictures
+    if user not in ride.participants.all():
+        # Raising the exception does not display message on browser.
+        raise PermissionDenied("Only ride participants can update a ride report.")
     # Ride reports can only be entered after the ride
     today = date.today()
     if today < ride.ride_date:
-        return False
+        msg = 'Ride reports can not be updated before the ride.'
+        raise PermissionDenied(msg)
     return True
 
 
@@ -348,7 +348,7 @@ class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Ride
     # fields = ['route', 'ride_date', 'start_time', 'additional_details']
     form_class = CreatePictureForm
-    template_name = 'rides/picture_create.html'
+    template_name = 'rides/picture_form.html'
     success_url = 'update-report'
 
     def form_valid(self, form):
@@ -364,14 +364,8 @@ class PictureCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     # Only the ride participants are allowed to create.
     def test_func(self):
         ride = self.get_object()
-        # Only ride participants can create ride report pictures
-        if self.request.user not in ride.participants.all():
-            return False
-        # Ride reports can only be entered after the ride
-        today = date.today()
-        if today < ride.ride_date:
-            return False
-        return True
+        user = self.request.user
+        return ride_report_test_func(ride, user)
 
     def get_context_data(self, **kwargs):
         # Get the current pk from the method dictionary
@@ -390,26 +384,36 @@ class PictureUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Picture
     # fields = ['route', 'ride_date', 'start_time', 'additional_details', 'leader']
     form_class = UpdatePictureForm
-    template_name = 'rides/picture_update.html'
+    template_name = 'rides/picture_form.html'
     success_url = 'update-report'
 
-    # def form_valid(self, form):
-    #     form.instance.leader = self.request.user
-    #     return super().form_valid(form)
+    # def post(self, request, *args, **kwargs):
+    #     picture = self.get_object()
+    #     ride = picture.ride
+    #     form = self.get_form()
+    #
+    #     if form.is_valid():
+    #         uploaded_image = form.cleaned_data['picture']
+    #         image = Image.open(uploaded_image)
+    #         image.thumbnail((1024, 1024))  # Resize the image to a maximum dimension of 800x800 pixels
+    #
+    #         # Save the resized image to a BytesIO object
+    #         output = io.BytesIO()
+    #         image.save(output, format='JPEG', quality=75 )
+    #         output.seek(0)
+    #
+    #         # Assign the resized image back to the ImageField
+    #         picture.picture.save(uploaded_image.name, output, save=True)
+    #
+    #     return super().post(request, *args, **kwargs)
 
     # Check to make sure user is allowed to update the ride.
     # Only the ride's leader is allowed to update.
     def test_func(self):
         picture = self.get_object()
         ride = picture.ride
-        # Only ride participants can create ride report pictures
-        if self.request.user not in ride.participants.all():
-            return False
-        # Ride reports can only be entered after the ride
-        today = date.today()
-        if today < ride.ride_date:
-            return False
-        return True
+        user = self.request.user
+        return ride_report_test_func(ride, user)
 
     def get_success_url(self):
         ride = self.get_object().ride
@@ -435,12 +439,25 @@ class PictureUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # form.send_email()
         if form.has_changed():
             success_message = ''
-            if 'picture' in form.changed_data:
-                old_picture = self.get_object()
-                new_picture = form.cleaned_data.get('picture')
-                if new_picture:
-                    old_picture.picture.delete()
-                    success_message += "Picture changed.  "
+            # if 'picture' in form.changed_data:
+            #     old_picture = self.get_object()
+            #     new_picture = form.cleaned_data.get('picture')
+            #     if new_picture:
+            #         old_picture.picture.delete()
+            #         # default_storage.delete(old_picture.picture.file.name)
+            #         success_message += "Picture changed.  "
+            #
+            #         # Compress and save as jpg
+            #         image = Image.open(new_picture)
+            #         image.thumbnail((1024, 1024))  # Resize the image to a maximum dimension of 800x800 pixels
+            #
+            #         # Save the resized image to a BytesIO object
+            #         output = io.BytesIO()
+            #         image.save(output, format='JPEG', quality=75 )
+            #         output.seek(0)
+            #
+            #         # Assign the resized image back to the ImageField
+            #         old_picture.picture.save(new_picture.name, output, save=False)
 
             if 'caption' in form.changed_data:
                 success_message += "Picture's caption changed. "
@@ -450,3 +467,18 @@ class PictureUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         else:
             messages.warning(self.request, 'No changes detected. Picture not updated')
         return super().form_valid(form)
+
+
+class PictureDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Picture
+
+    def test_func(self):
+        picture = self.get_object()
+        ride = picture.ride
+        user = self.request.user
+        return ride_report_test_func(ride, user)
+
+    def get_success_url(self):
+        ride = self.get_object().ride
+        ride_pk = ride.pk
+        return f'/rides/{ride_pk}/update-report'

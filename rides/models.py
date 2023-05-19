@@ -1,12 +1,16 @@
+import os
 from datetime import datetime
+# from io import BytesIO
 
 from ckeditor.fields import RichTextField
+# from django.core.files.uploadedfile import InMemoryUploadedFile
 # from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
+from PIL import Image
 
 from routes.models import Route
 
@@ -95,4 +99,23 @@ class Picture(models.Model):
         if self.picture:
             default_storage.delete(self.picture.name)
         super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+
+        super().save(*args, **kwargs) # Open the image file
+        img = Image.open(self.picture.path)
+
+        # if format isn't jpg, then save to change to be jpg
+        save_picture = img.format != 'JPEG'
+
+        max_dim = 512
+        if img.height > max_dim or img.width > max_dim:
+            # Resize the image
+            max_size = (max_dim, max_dim)
+            img.thumbnail(max_size)
+            save_picture = True
+
+            # Save the resized image, overwriting the original file
+        if save_picture:
+            img.save(self.picture.path, format='JPEG', quality=75)
 
